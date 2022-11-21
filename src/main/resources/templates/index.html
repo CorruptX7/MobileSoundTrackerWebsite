@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Google Maps API</title>
+
+    <script type="text/javascript" th:src="@{/jsandcss/test.js}"></script>
+    <link rel="stylesheet" type="text/css" th:src="@{/jsandcss/styles.css}"/>
+</head>
+
+<style>
+#map{
+   height: 720px;
+   width: 1280px;
+}
+</style>
+
+    <body>
+
+    <div th:each="sample:${samples}">
+        <div th:id="${sample.id}">
+            <input type="hidden" th:id="'sample'+${sample.id}" th:value="${sample.sample}">
+            <input class="test" type="hidden" th:id="'longitude'+${sample.id}" th:value="${sample.longitude}">
+            <input type="hidden" th:id="'latitude'+${sample.id}" th:value="${sample.latitude}">
+            <input type="hidden" th:id="'db'+${sample.id}" th:value="${sample.db}">
+        </div>
+    </div>
+
+    <center>
+        <div id="map"></div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+        <script>
+        /*<![CDATA[*/
+
+        var map;
+
+        //The location of the map
+        function initMap(){
+        map = new google.maps.Map(document.getElementById('map'),
+        { center: {lat: 51.903614, lng: -8.468399} , zoom:12});
+
+        setMarkers(map);
+        }
+
+        var longitudes = [];
+
+          var lng = document.getElementById("longitude62").value;
+          var lng2 = document.getElementById("longitude65").value;
+          longitudes.push(lng);
+          longitudes.push(lng2);
+          console.log(lng);
+          console.log(longitudes);
+
+
+        var latitudes = [];
+
+        var lat = document.getElementById("latitude62").value;
+        var lat2 = document.getElementById("latitude65").value;
+          latitudes.push(lat);
+          latitudes.push(lat2);
+          console.log(lat);
+          console.log(latitudes);
+
+        var samples = [];
+
+        var samp = document.getElementById("sample62").value;
+        var samp2 = document.getElementById("sample65").value;
+          samples.push(samp);
+          samples.push(samp2);
+          console.log(samp);
+          console.log(samples);
+
+        var levels = [];
+
+        var level = document.getElementById("db62").value;
+        var level2 = document.getElementById("db65").value;
+          levels.push(level);
+          levels.push(level2);
+          console.log(level);
+          console.log(levels);
+
+        function setMarkers(map) {
+
+        const infoWindow = new google.maps.InfoWindow();
+
+        for (let i = 0; i < longitudes.length; i++) {
+         const lng = Number(longitudes[i]);
+         const lat = Number(latitudes[i]);
+
+         const sample = samples[i];
+         const db = Number(levels[i]);
+
+         const marker = new google.maps.Marker({
+          position: { lat: lat, lng: lng },
+          map,
+          animation: google.maps.Animation.BOUNCE,
+          animation: google.maps.Animation.DROP,
+          title: '<br><b>Sample: </b>' + samp + '<br><br><b>Sound Level: </b>' + db + '<br><br><b>Longitude: </b>' + lng + '<br><b>Latitude: </b>' + lat + '<br>',
+        });
+
+            marker.addListener("click", () => {
+              infoWindow.close();
+              infoWindow.setContent(marker.getTitle());
+              infoWindow.open(marker.getMap(), marker);
+
+            });
+       }
+
+      }
+
+        /*]]>*/
+        </script>
+    </center>
+
+    <br><br><br>
+
+    <div>
+        <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Sample</th>
+            <th>Longitude</th>
+            <th>Latitude</th>
+            <th>SoundLevel</th>
+        </tr>
+        <tr th:each="sample:${samples}">
+        <td th:text="${sample.id}"></td>
+        <td th:text="${sample.sample}"></td>
+        <td th:text="${sample.longitude}"></td>
+        <td th:text="${sample.latitude}"></td>
+        <td th:text="${sample.db}"></td>
+        </tr>
+        </table>
+    </div>
+
+    <script src= "https://maps.googleapis.com/maps/api/js?key=AIzaSyD0c1wE8WqdyB9xIksqb1PMGYDahQ8rmas&callback=initMap" async defer></script>
+
+    </body>
+</html>
+
